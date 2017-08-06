@@ -4,6 +4,8 @@
 
     </head>
 
+
+<select data-bind="options: parents, value: name, optionsText: 'name'"></select>
     <body>
         <table>
             <thead>
@@ -48,6 +50,7 @@
                 var parents = [];
                 parents.push(new Parent("Alex"));
                 parents.push(new Parent("Christina"));
+
 
                 var names = [];
                 names.push(new Name("ΑΡΙΑΔΝΗ", "https://el.wikipedia.org/wiki/Αριάδνη", parents));
