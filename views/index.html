@@ -34,6 +34,7 @@
                         </tr>    
                     </tbody>
                 </table>
+
                 <div data-bind="visible: selectedParent()? selectedParent().allpoints() : false">
                     You are done!
                 </div>
@@ -81,7 +82,7 @@
                     kidnames.push(new Rating( names[i].name,names[i].url));
                     
                 }
-                self.gradeBudget = names.length* 4;
+                self.gradeBudget = names.length* 5;
                 self.kidnames = kidnames;
                 self.gradesUsed = ko.computed(function() {
                     var total = 0;
@@ -113,6 +114,17 @@
                 var names = [];
                 names.push(new Name("ΑΡΙΑΔΝΗ", "https://el.wikipedia.org/wiki/Αριάδνη"));
                 names.push(new Name("ΙΟΛΗ", "https://el.wikipedia.org/wiki/Ιόλη"));
+                names.push(new Name("ΙΟΚΑΣΤΗ", "N/A"));
+                names.push(new Name("ΕΜΜΕΛΕΙΑ", "N/A"));
+                names.push(new Name("ΑΝΤΙΓΟΝΗ", "N/A"));
+                names.push(new Name("ΙΣΜΗΝΗ", "N/A"));
+                names.push(new Name("ΔΩΡΟΘΕΑ", "N/A"));
+                names.push(new Name("ΗΛΕΚΤΡΑ", "N/A"));
+                names.push(new Name("ΜΑΛΕΝΑ", "N/A"));
+                names.push(new Name("ΙΩΑΝΝΑ", "N/A"));
+                names.push(new Name("ΜΑΡΙΑ", "N/A"));
+                names.push(new Name("ΝΕΦΕΛΗ", "N/A"));
+                names.push(new Name("ΚΑΛΛΙΣΤΩ", "N/A"));
                 
                 var parents = [];
                 parents.push(new Parent("Alex", names));
@@ -183,7 +195,6 @@
                 }, self);
 
                  self.tt = ko.computed(function(){
-                    console.log(self.selectedParent.kidnames);
                      return [0,1,2,3,4,5,6,7,8,9,10];
 
                 }, self);
