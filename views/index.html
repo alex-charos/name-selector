@@ -1,5 +1,6 @@
 <html>
     <head>
+        <script   src="https://code.jquery.com/jquery-3.2.1.js"   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="   crossorigin="anonymous"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
 
     </head>
@@ -112,38 +113,52 @@
             function NamesModel() {
                 var self = this;
                 var names = [];
-                names.push(new Name("ΑΡΙΑΔΝΗ", "https://el.wikipedia.org/wiki/Αριάδνη"));
-                names.push(new Name("ΙΟΛΗ", "https://el.wikipedia.org/wiki/Ιόλη"));
-                names.push(new Name("ΙΟΚΑΣΤΗ", "N/A"));
-                names.push(new Name("ΕΜΜΕΛΕΙΑ", "N/A"));
-                names.push(new Name("ΑΝΤΙΓΟΝΗ", "N/A"));
-                names.push(new Name("ΙΣΜΗΝΗ", "N/A"));
-                names.push(new Name("ΔΩΡΟΘΕΑ", "N/A"));
-                names.push(new Name("ΗΛΕΚΤΡΑ", "N/A"));
-                names.push(new Name("ΜΑΛΕΝΑ", "N/A"));
-                names.push(new Name("ΙΩΑΝΝΑ", "N/A"));
-                names.push(new Name("ΜΑΡΙΑ", "N/A"));
-                names.push(new Name("ΝΕΦΕΛΗ", "N/A"));
-                names.push(new Name("ΚΑΛΛΙΣΤΩ", "N/A"));
-                
+                // names.push(new Name("ΑΡΙΑΔΝΗ", "https://el.wikipedia.org/wiki/Αριάδνη"));
+                // names.push(new Name("ΙΟΛΗ", "https://el.wikipedia.org/wiki/Ιόλη"));
+                // names.push(new Name("ΙΟΚΑΣΤΗ", "N/A"));
+                // names.push(new Name("ΕΜΜΕΛΕΙΑ", "N/A"));
+                // names.push(new Name("ΑΝΤΙΓΟΝΗ", "N/A"));
+                // names.push(new Name("ΙΣΜΗΝΗ", "N/A"));
+                // names.push(new Name("ΔΩΡΟΘΕΑ", "N/A"));
+                // names.push(new Name("ΗΛΕΚΤΡΑ", "N/A"));
+                // names.push(new Name("ΜΑΛΕΝΑ", "N/A"));
+                // names.push(new Name("ΙΩΑΝΝΑ", "N/A"));
+                // names.push(new Name("ΜΑΡΙΑ", "N/A"));
+                // names.push(new Name("ΝΕΦΕΛΗ", "N/A"));
+                // names.push(new Name("ΚΑΛΛΙΣΤΩ", "N/A"));
+
                 var parents = [];
-                parents.push(new Parent("Alex", names));
-                parents.push(new Parent("Christina", names));
-                var parent = parents[0];
+                self.parents = ko.observableArray(parents);
+
+                $.getJSON("/names", function(data) { 
+                    console.log(data);
+                    for (var i =0; i < data.length; i++) {
+                        names.push(new Name(data[i].name, data[i].url));                        
+                    }
+                    var parents = [];
+                    parents.push(new Parent("Alex", names));
+                    parents.push(new Parent("Christina", names));
+                    var parent = parents[0];
+                    self.parents(parents);
+                    self.parents = ko.observableArray(parents);
+
+
+                });
+                
+               
 
 
                 self.resultsReady = ko.observable(false);
                 self.selectedParent = ko.observable(undefined);
-                self.parents = ko.observableArray(parents);
                 self.showResults = ko.observable(false);
                 self.init = function() {
                     self.resultsReady(false);
                     self.selectedParent(undefined);
                     self.showResults(false);
-                     var parents = [];
-                parents.push(new Parent("Alex", names));
-                parents.push(new Parent("Christina", names));
-                var parent = parents[0];
+                    var parents = [];
+                    parents.push(new Parent("Alex", names));
+                    parents.push(new Parent("Christina", names));
+                    var parent = parents[0];
 
                     self.parents(parents);
 
