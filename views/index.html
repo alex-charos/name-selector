@@ -63,7 +63,7 @@
                 </tr>    
             </tbody>
         </table>
-        <button data-bind="click:init">Try again..!</button>
+        <button data-bind="click:reset">Try again..!</button>
          </div>
     </div>
         <script type="text/javascript">
@@ -112,7 +112,7 @@
 
             function NamesModel() {
                 var self = this;
-                var names = [];
+                
                 // names.push(new Name("ΑΡΙΑΔΝΗ", "https://el.wikipedia.org/wiki/Αριάδνη"));
                 // names.push(new Name("ΙΟΛΗ", "https://el.wikipedia.org/wiki/Ιόλη"));
                 // names.push(new Name("ΙΟΚΑΣΤΗ", "N/A"));
@@ -126,44 +126,42 @@
                 // names.push(new Name("ΜΑΡΙΑ", "N/A"));
                 // names.push(new Name("ΝΕΦΕΛΗ", "N/A"));
                 // names.push(new Name("ΚΑΛΛΙΣΤΩ", "N/A"));
-
-                var parents = [];
-                self.parents = ko.observableArray(parents);
-
-                $.getJSON("/names", function(data) { 
-                    console.log(data);
-                    for (var i =0; i < data.length; i++) {
-                        names.push(new Name(data[i].name, data[i].url));                        
-                    }
-                    var parents = [];
-                    parents.push(new Parent("Alex", names));
-                    parents.push(new Parent("Christina", names));
-                    var parent = parents[0];
-                    self.parents(parents);
-                    self.parents = ko.observableArray(parents);
-
-
-                });
+            
                 
                
 
-
+                self.parents = ko.observableArray([]);
                 self.resultsReady = ko.observable(false);
-                self.selectedParent = ko.observable(undefined);
                 self.showResults = ko.observable(false);
-                self.init = function() {
-                    self.resultsReady(false);
-                    self.selectedParent(undefined);
-                    self.showResults(false);
+                self.selectedParent = ko.observable(undefined);
+                self.loadData = function() {
+                     $.getJSON("/names", function(data) { 
+                    console.log(data);
+                    var names = [];
+                    for (var i =0; i < data.names.length; i++) {
+                        names.push(new Name(data.names[i].name, data.names[i].url));                        
+                    }
                     var parents = [];
-                    parents.push(new Parent("Alex", names));
-                    parents.push(new Parent("Christina", names));
-                    var parent = parents[0];
 
+                    for (var i =0; i < data.parents.length; i++) {
+                        parents.push(new Parent(data.parents[i].name, names));
+                    }
+                    
+                    
+                    console.log(parents);
                     self.parents(parents);
+                    self.parents = ko.observableArray(parents);
+                  
+
+                });
+                }
+                self.reset = function(){
+                    self.loadData();
+                  self.resultsReady(false);
+                  self.showResults(false);
+                                  self.selectedParent(undefined);
 
                 }
-
                 self.toggleShowResults = function(selfz) {
                     console.log(self);
                     self.showResults(true);
@@ -173,6 +171,7 @@
                     for (var i =0; i < self.parents()  .length; i++) {
                         allpoints = allpoints && self.parents()[i].allpoints();
                     }
+                    console.log('all p' + allpoints);
                     if (allpoints) {
                         self.resultsReady(true);
                         var res = {};
@@ -213,7 +212,12 @@
                      return [0,1,2,3,4,5,6,7,8,9,10];
 
                 }, self);
+
+                                 self.loadData();
+
             }
+
+
             ko.applyBindings(new NamesModel());
         </script>
     </body>
