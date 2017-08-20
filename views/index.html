@@ -39,7 +39,7 @@
                 <div data-bind="visible: selectedParent()? selectedParent().allpoints() : false">
                     You are done!
                 </div>
-                <div data-bind="visible: resultsReady()">
+                <div data-bind="visible: resultsReady">
                     <button data-bind="click:toggleShowResults "> Show results! </button>
                 </div>
     
@@ -112,54 +112,31 @@
 
             function NamesModel() {
                 var self = this;
-                
-                // names.push(new Name("ΑΡΙΑΔΝΗ", "https://el.wikipedia.org/wiki/Αριάδνη"));
-                // names.push(new Name("ΙΟΛΗ", "https://el.wikipedia.org/wiki/Ιόλη"));
-                // names.push(new Name("ΙΟΚΑΣΤΗ", "N/A"));
-                // names.push(new Name("ΕΜΜΕΛΕΙΑ", "N/A"));
-                // names.push(new Name("ΑΝΤΙΓΟΝΗ", "N/A"));
-                // names.push(new Name("ΙΣΜΗΝΗ", "N/A"));
-                // names.push(new Name("ΔΩΡΟΘΕΑ", "N/A"));
-                // names.push(new Name("ΗΛΕΚΤΡΑ", "N/A"));
-                // names.push(new Name("ΜΑΛΕΝΑ", "N/A"));
-                // names.push(new Name("ΙΩΑΝΝΑ", "N/A"));
-                // names.push(new Name("ΜΑΡΙΑ", "N/A"));
-                // names.push(new Name("ΝΕΦΕΛΗ", "N/A"));
-                // names.push(new Name("ΚΑΛΛΙΣΤΩ", "N/A"));
-            
-                
-               
-
                 self.parents = ko.observableArray([]);
                 self.resultsReady = ko.observable(false);
                 self.showResults = ko.observable(false);
                 self.selectedParent = ko.observable(undefined);
                 self.loadData = function() {
                      $.getJSON("/names", function(data) { 
-                    console.log(data);
-                    var names = [];
-                    for (var i =0; i < data.names.length; i++) {
-                        names.push(new Name(data.names[i].name, data.names[i].url));                        
-                    }
-                    var parents = [];
+                        var names = [];
+                        for (var i =0; i < data.names.length; i++) {
+                            names.push(new Name(data.names[i].name, data.names[i].url));                        
+                        }
+                        var parents = [];
 
-                    for (var i =0; i < data.parents.length; i++) {
-                        parents.push(new Parent(data.parents[i].name, names));
-                    }
-                    
-                    
-                    console.log(parents);
-                    self.parents(parents);
-                    self.parents = ko.observableArray(parents);
-                  
-
-                });
+                        for (var i =0; i < data.parents.length; i++) {
+                            parents.push(new Parent(data.parents[i].name, names));
+                        }
+                        
+                        self.parents(parents);
+                    });
                 }
                 self.reset = function(){
+                    self.resultsReady(false);
+                    self.showResults(false);
+                    self.selectedParent(undefined);
                     self.loadData();
-                  self.resultsReady(false);
-                  self.showResults(false);
-                                  self.selectedParent(undefined);
+                //    self.results;
 
                 }
                 self.toggleShowResults = function(selfz) {
@@ -167,7 +144,7 @@
                     self.showResults(true);
                 };
                 self.results = ko.computed(function(){
-                    var allpoints = true;
+                    var allpoints = true && self.parents().length > 0;
                     for (var i =0; i < self.parents()  .length; i++) {
                         allpoints = allpoints && self.parents()[i].allpoints();
                     }
