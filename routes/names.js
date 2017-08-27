@@ -1,31 +1,40 @@
-var express = require('express');
-var router = express.Router();
+var express 	= require('express');
+var fs 		= require('fs');
+var router 	= express.Router();
 
-/* GET users listing. */
+/* GET names listing. */
 router.get('/', function(req, res, next) {
-	var names = [];
-        names.push({"name":"ΑΡΙΑΔΝΗ", "url":"https://el.wikipedia.org/wiki/Αριάδνη"});
-        // names.push({"name":"ΙΟΛΗ", "url":"https://el.wikipedia.org/wiki/Ιόλη"});
-        // names.push({"name":"ΙΟΚΑΣΤΗ", "url":"N/A"});
-        // names.push({"name":"ΕΜΜΕΛΕΙΑ", "url":"N/A"});
-        // names.push({"name":"ΑΝΤΙΓΟΝΗ", "url":"N/A"});
-        // names.push({"name":"ΙΣΜΗΝΗ", "url":"N/A"});
-        // names.push({"name":"ΔΩΡΟΘΕΑ", "url":"N/A"});
-        // names.push({"name":"ΗΛΕΚΤΡΑ", "url":"N/A"});
-        // names.push({"name":"ΜΑΛΕΝΑ", "url":"N/A"});
-        // names.push({"name":"ΙΩΑΝΝΑ", "url":"N/A"});
-        // names.push({"name":"ΜΑΡΙΑ", "url":"N/A"});
-        // names.push({"name":"ΝΕΦΕΛΗ", "url":"N/A"});
-        // names.push({"name":"ΚΑΛΛΙΣΤΩ", "url":"N/A"});
+    var names = [];
+    var parents = [];
+       
 
-        var parents = [];
-        parents.push({"name": "Alex"});
-        parents.push({"name": "Christina"});
+    try {
+  	 	var pp = fs.readFileSync('./resources/parents.txt').toString().split("\n");
+        for (var i = 0; i < pp.length; i++) {
+             parents.push({"name": pp[i]});
+        
+        }
 
+        var nn = fs.readFileSync('./resources/names.txt').toString().split("\n");
+        for (var i = 0; i < nn.length; i++) {
+            var n = nn[i].split(" ");
+            var o = {"name": n[0]};
+            if (n.length>1) {
+                o["url"] = n[1];
+            } else {
+                o["url"] = "N/A";
+            }
+            names.push(o);
+        
+        }
 
-        var obj = {"names" : names, "parents": parents}
+	} catch (e) {
+		console.log(e);
+	}
 
-  res.send(obj);
+    var obj = {"names" : names, "parents": parents}
+
+    res.send(obj);
 });
 
 module.exports = router;
